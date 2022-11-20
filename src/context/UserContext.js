@@ -6,6 +6,8 @@ import {
   onAuthStateChanged,
   signOut,
   updateProfile,
+  signInWithPopup,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
 export const AuthUserContext = createContext();
@@ -16,7 +18,6 @@ const UserContext = ({ children }) => {
 
   // create user with email password
   const createUser = (email, password) => {
-    setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
@@ -33,9 +34,20 @@ const UserContext = ({ children }) => {
 
   // update user
   const userProfile = (name) => {
-    return updateProfile(user, {
+    return updateProfile(auth.currentUser, {
       displayName: name,
     });
+  };
+
+  // google login
+  const googleLogin = (provider) => {
+    return signInWithPopup(auth, provider);
+  };
+
+  // frogot passwore
+
+  const forgetPassword = (email) => {
+    sendPasswordResetEmail(auth, email);
   };
 
   // hold user
@@ -54,6 +66,8 @@ const UserContext = ({ children }) => {
     logOut,
     userProfile,
     loading,
+    googleLogin,
+    forgetPassword,
   };
   return (
     <AuthUserContext.Provider value={authInfo}>

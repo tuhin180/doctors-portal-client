@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import { GoogleAuthProvider } from "firebase/auth";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthUserContext } from "../../../context/UserContext";
+import useToken from "../../../Hooks/useToken";
 
 const Login = () => {
   const {
@@ -11,10 +13,20 @@ const Login = () => {
     handleSubmit,
   } = useForm();
 
-  const { loginUser } = useContext(AuthUserContext);
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || "/";
+
+  const { loginUser, googleLogin, forgetPassword } =
+    useContext(AuthUserContext);
+  const googleProvider = new GoogleAuthProvider();
+
+  const [loginUserEmail, setLoginUserEmail] = useState("");
+  const [token] = useToken(loginUserEmail);
+
+  if (token) {
+    navigate(from, { replace: true });
+  }
 
   const handleLogin = (data) => {
     console.log(data);
@@ -23,14 +35,46 @@ const Login = () => {
         // Signed in
         const user = userCredential.user;
         console.log(user);
-        navigate(from, { replace: true });
+
+        setLoginUserEmail(data.email);
+
         toast.success("user Logged in succesfully");
+
         // ...
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         toast.error(errorCode, errorMessage);
+      });
+  };
+
+  const handleGoogleLogin = () => {
+    googleLogin(googleProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        navigate(from, { replace: true });
+        toast("login succesfull");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        toast(errorCode, errorMessage);
+      });
+  };
+
+  const hadleforgotPassword = () => {
+    forgetPassword()
+      .then(() => {
+        // Password reset email sent!
+        // ..
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        toast.error(errorCode, errorMessage);
+        // ..
       });
   };
   return (
@@ -63,11 +107,12 @@ const Login = () => {
             {errors.password && (
               <p className="text-error">{errors.password?.message}</p>
             )}
-            <Link to="/forgot">
-              <label className="label">
-                <span className="label-text">Forget password</span>
-              </label>
-            </Link>
+
+            <label className="label">
+              <Link onClick={hadleforgotPassword} className="label-text">
+                Forget password
+              </Link>
+            </label>
           </div>
 
           <input
@@ -85,7 +130,10 @@ const Login = () => {
           </p>
           <div className="divider">OR</div>
 
-          <button className="uppercase btn btn-outline w-fulll ">
+          <button
+            onClick={handleGoogleLogin}
+            className="uppercase btn btn-outline w-fulll "
+          >
             signin with google
           </button>
         </div>

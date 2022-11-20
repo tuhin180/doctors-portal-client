@@ -1,7 +1,12 @@
 import React from "react";
+import MyAppoinment from "./MyAppoinment";
 
 const Dashboard = () => {
-  return <div>i am dashboard</div>;
+  return (
+    <div>
+      <MyAppoinment></MyAppoinment>
+    </div>
+  );
 };
 
 export default Dashboard;

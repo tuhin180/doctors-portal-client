@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
+import { GoogleAuthProvider } from "firebase/auth";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthUserContext } from "../../../context/UserContext";
+import useToken from "../../../Hooks/useToken";
 
 const Register = () => {
   const {
@@ -11,10 +13,21 @@ const Register = () => {
     handleSubmit,
   } = useForm();
 
-  const { createUser, userProfile } = useContext(AuthUserContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location.state?.from?.pathname || "/";
+
+  const { createUser, userProfile, googleLogin } = useContext(AuthUserContext);
+  const googleProvider = new GoogleAuthProvider();
+
+  const [createdUserEmail, setCreatedUserEmail] = useState("");
+  const [token] = useToken(createdUserEmail);
+
+  if (token) {
+    navigate("/");
+  }
 
   const handleRegister = (data) => {
-    console.log(data);
     createUser(data.email, data.password)
       .then((userCredential) => {
         // Signed in
@@ -23,11 +36,14 @@ const Register = () => {
         toast.success("user created succesfully");
         userProfile(data.name)
           .then(() => {
+            saveUser(data.name, data.email);
             // Profile updated!
+            toast.success("profile updated");
             // ...
           })
           .catch((error) => {
             // An error occurred
+            toast.error(error);
             // ...
           });
         // ...
@@ -39,6 +55,37 @@ const Register = () => {
         // ..
       });
   };
+
+  const handleGoogleLogin = () => {
+    googleLogin(googleProvider)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        Navigate(from, { replace: true });
+        toast("login succesfull");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        toast(errorCode, errorMessage);
+      });
+  };
+
+  const saveUser = (name, email) => {
+    const user = { name, email };
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCreatedUserEmail(email);
+      });
+  };
+
   return (
     <div className=" h-[800px] flex justify-center items-center">
       <div className="w-96 p-7 shadow-lg rounded-lg">
@@ -105,7 +152,10 @@ const Register = () => {
           </p>
           <div className="divider">OR</div>
 
-          <button className="uppercase btn btn-outline w-fulll ">
+          <button
+            onClick={handleGoogleLogin}
+            className="uppercase btn btn-outline w-fulll "
+          >
             signin with google
           </button>
         </div>
