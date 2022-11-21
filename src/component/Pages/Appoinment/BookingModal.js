@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { AuthUserContext } from "../../../context/UserContext";
 
 const BookingModal = ({ treatment, setTreatment, selectedDate, refetch }) => {
-  const { name, slots } = treatment;
+  const { name, slots, price } = treatment;
   const date = format(selectedDate, "PP");
   const { user } = useContext(AuthUserContext);
 
@@ -24,6 +24,7 @@ const BookingModal = ({ treatment, setTreatment, selectedDate, refetch }) => {
       name,
       phone,
       email,
+      price,
     };
 
     fetch("http://localhost:5000/bookings", {
