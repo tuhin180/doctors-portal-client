@@ -12,9 +12,9 @@ const AvailableAppoinment = ({ selectedDate }) => {
   const { data: appoinmentOption = [], refetch } = useQuery({
     queryKey: ["appoinmentOption", date],
     queryFn: () =>
-      fetch(`http://localhost:5000/v2/appointmentOptions?date=${date}`).then(
-        (res) => res.json()
-      ),
+      fetch(
+        `https://doctors-portal-server-delta-ten.vercel.app/v2/appointmentOptions?date=${date}`
+      ).then((res) => res.json()),
   });
 
   return (

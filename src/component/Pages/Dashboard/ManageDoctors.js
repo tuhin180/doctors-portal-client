@@ -17,7 +17,7 @@ const ManageDoctors = () => {
   } = useQuery({
     queryKey: ["Doctors"],
     queryFn: () =>
-      fetch("http://localhost:5000/doctors", {
+      fetch("https://doctors-portal-server-delta-ten.vercel.app/doctors", {
         headers: {
           authorization: `bearer ${localStorage.getItem("accessToken")}`,
         },
@@ -29,12 +29,15 @@ const ManageDoctors = () => {
   if (error) return "An error has occurred: " + error.message;
 
   const handleDeleteDoctor = (doctor) => {
-    fetch(`http://localhost:5000/doctors/${doctor._id}`, {
-      method: "DELETE",
-      headers: {
-        authorization: `bearer${localStorage.getItem("accessToken")}`,
-      },
-    })
+    fetch(
+      `https://doctors-portal-server-delta-ten.vercel.app/doctors/${doctor._id}`,
+      {
+        method: "DELETE",
+        headers: {
+          authorization: `bearer${localStorage.getItem("accessToken")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

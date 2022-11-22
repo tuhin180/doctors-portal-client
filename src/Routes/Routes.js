@@ -64,12 +64,10 @@ const routes = createBrowserRouter([
       {
         path: "/dashboard/payment/:id",
         loader: ({ params }) =>
-          fetch(`http://localhost:5000/bookings/${params.id}`),
-        element: (
-          <AdminRoute>
-            <Payment></Payment>
-          </AdminRoute>
-        ),
+          fetch(
+            `https://doctors-portal-server-delta-ten.vercel.app/bookings/${params.id}`
+          ),
+        element: <Payment></Payment>,
       },
     ],
   },

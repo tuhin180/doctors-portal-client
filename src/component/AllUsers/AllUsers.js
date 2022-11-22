@@ -11,7 +11,9 @@ const AllUsers = () => {
   } = useQuery({
     queryKey: ["Users"],
     queryFn: () =>
-      fetch("http://localhost:5000/users").then((res) => res.json()),
+      fetch("https://doctors-portal-server-delta-ten.vercel.app/users").then(
+        (res) => res.json()
+      ),
   });
 
   if (isLoading) return "Loading...";
@@ -19,12 +21,15 @@ const AllUsers = () => {
   if (error) return "An error has occurred: " + error.message;
 
   const hanldeMakeAdmin = (id) => {
-    fetch(`http://localhost:5000/users/admin/${id}`, {
-      method: "PUT",
-      headers: {
-        authorization: `bearer ${localStorage.getItem("accessToken")}`,
-      },
-    })
+    fetch(
+      `https://doctors-portal-server-delta-ten.vercel.app/users/admin/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          authorization: `bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log(data);

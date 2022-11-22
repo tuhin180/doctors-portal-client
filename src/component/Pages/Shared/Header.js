@@ -26,17 +26,9 @@ const Header = () => {
       </li>
 
       <li>
-        <Link to="/about">About</Link>
-      </li>
-      <li>
         <Link to="/appoinment">Appoinment</Link>
       </li>
-      <li>
-        <Link to="/review">Review</Link>
-      </li>
-      <li>
-        <Link to="/contact">Contact Us</Link>
-      </li>
+
       {user?.email ? (
         <>
           <li>

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const MyAppoinment = () => {
   const { user } = useContext(AuthUserContext);
 
-  const url = `http://localhost:5000/bookings?email=${user?.email}`;
+  const url = `https://doctors-portal-server-delta-ten.vercel.app/bookings?email=${user?.email}`;
   const { isLoading, error, data } = useQuery({
     queryKey: ["appoinment"],
     queryFn: () =>

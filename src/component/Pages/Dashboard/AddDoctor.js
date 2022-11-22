@@ -18,9 +18,9 @@ const AddDoctor = () => {
   } = useQuery({
     queryKey: ["speciality"],
     queryFn: () =>
-      fetch("http://localhost:5000/appoinmentSpeciality").then((res) =>
-        res.json()
-      ),
+      fetch(
+        "https://doctors-portal-server-delta-ten.vercel.app/appoinmentSpeciality"
+      ).then((res) => res.json()),
   });
 
   if (isLoading) return "Loading...";
@@ -49,7 +49,7 @@ const AddDoctor = () => {
             image: imgData.data.url,
           };
 
-          fetch("http://localhost:5000/doctors", {
+          fetch("https://doctors-portal-server-delta-ten.vercel.app/doctors", {
             method: "POST",
             headers: {
               "content-type": "application/json",
